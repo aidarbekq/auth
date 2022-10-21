@@ -65,10 +65,8 @@ class LoginSerializer(serializers.ModelSerializer):
             'tokens': user.tokens
         }
 
-
-
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
-    email = serializers.EmailField(min_length=2)
+    email = serializers.EmailField(min_length=1)
 
     class Meta:
         fields = ['email']
@@ -76,12 +74,13 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
 
 class SetNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=6, max_length=68, write_only=True)
-    token = serializers.CharField(min_length=6, write_only=True)
     uidb64 = serializers.CharField(min_length=1, write_only=True)
+    token = serializers.CharField(min_length=6, write_only=True)
+
 
 
     class Meta:
-        fields = ['password', 'token', 'uidb64']
+        fields = ['password', 'uidb64', 'token']
 
 
     def validate(self, attrs):
@@ -101,4 +100,3 @@ class SetNewPasswordSerializer(serializers.Serializer):
             return (user)
         except Exception as e:
             raise AuthenticationFailed('The reset link is invalid')
-        return super().validate(attrs)
